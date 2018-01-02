@@ -52,10 +52,14 @@ def parse_values(values, outfile):
     writer = csv.writer(outfile, quoting=csv.QUOTE_MINIMAL)
     for reader_row in reader:
         for column in reader_row:
-            # If our current string is empty... - removed this as it was missing nulls at the end of a row
-                # if len(column) == 0 or column == 'NULL':
-                #    latest_row.append(chr(0))
-                #   continue
+             # If our current string is empty...
+            if len(column) == 0 or column == 'NULL':
+                latest_row.append(column)
+                continue
+            # Cast Mysql empty dates to NULL
+            if column == '0000-00-00 00:00:00':
+                latest_row.append('NULL')
+                continue;
             # If our string starts with an open paren
             if column[0] == "(":
                 # Assume that this column does not begin
